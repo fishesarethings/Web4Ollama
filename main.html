@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ollama Chatbot</title>
+    <script>
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            window.location.href = "index.html";
+        }
+        async function fetchModels() {
+            try {
+                const response = await fetch("http://127.0.0.1:11434/api/tags");
+                const data = await response.json();
+                const modelDropdown = document.getElementById("model");
+                modelDropdown.innerHTML = data.models.length ? data.models.map(m => `<option>${m.name}</option>`).join('') : "<option>No models found</option>";
+            } catch {
+                alert("Ollama is not running.");
+            }
+        }
+        async function sendMessage() {
+            const model = document.getElementById("model").value;
+            const userMessage = document.getElementById("userInput").value;
+            if (!userMessage) return;
+            document.getElementById("chatBox").innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+            try {
+                const response = await fetch("http://127.0.0.1:11434/api/generate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ model, prompt: userMessage })
+                });
+                const data = await response.json();
+                document.getElementById("chatBox").innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+            } catch {
+                alert("Error communicating with Ollama.");
+            }
+        }
+    </script>
+</head>
+<body onload="fetchModels()">
+    <button onclick="localStorage.clear(); window.location.href='index.html'">Logout</button>
+    <h1>Ollama Chatbot</h1>
+    <label>Select Model: <select id="model"><option>Loading...</option></select></label>
+    <div id="chatBox" style="height: 200px; overflow-y: auto; border: 1px solid #ddd;"></div>
+    <input id="userInput" type="text" placeholder="Type here...">
+    <button onclick="sendMessage()">Send</button>
+</body>
+</html>

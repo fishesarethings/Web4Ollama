@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(to bottom, #d4418e, #0652c5);
+    color: white;
+}
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 350px;
+    color: black;
+}
+input, button {
+    width: 94%;
+    padding: 10px;
+    margin: 10px 0;
+}
+button {
+    background: #d4418e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+button:hover {
+    background: #b8327e;
+}
