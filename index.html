@@ -13,13 +13,13 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            text-align: center;
         }
         .login-container {
             background: white;
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            text-align: center;
             width: 350px;
         }
         input, button {
@@ -62,11 +62,13 @@
             const password = document.getElementById("password").value;
             if (localStorage.getItem(email) === password) {
                 localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userName", email.split("@")[0]); // Store username for welcome message
                 window.location.href = "main.html";
             } else {
                 document.getElementById("message").textContent = "Invalid login.";
             }
         });
+
         function signup() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
@@ -77,8 +79,11 @@
                 alert("Email already exists.");
             }
         }
+
         function loginWithGitHub() {
-            window.location.href = "https://github.com/login/oauth/authorize?client_id=Ov23li1RjJKnUCc6dEsS=user";
+            const clientId = "YOUR_GITHUB_CLIENT_ID";
+            const redirectUri = encodeURIComponent("https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/main.html");
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user`;
         }
     </script>
 </body>

@@ -1,11 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ollama Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 40px;
+        }
+        #chatBox {
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 200px;
+            width: 100%;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+    </style>
     <script>
         if (localStorage.getItem("isLoggedIn") !== "true") {
             window.location.href = "index.html";
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const userName = localStorage.getItem("userName") || "User";
+            document.getElementById("welcomeMessage").textContent = `Welcome, ${userName}!`;
+        });
+
         async function fetchModels() {
             try {
                 const response = await fetch("http://127.0.0.1:11434/api/tags");
@@ -16,31 +39,52 @@
                 alert("Ollama is not running.");
             }
         }
+
         async function sendMessage() {
             const model = document.getElementById("model").value;
-            const userMessage = document.getElementById("userInput").value;
-            if (!userMessage) return;
-            document.getElementById("chatBox").innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+            const userMessage = document.getElementById("userInput").value.trim();
+            const chatBox = document.getElementById("chatBox");
+
+            if (!model || model === "No models found" || !userMessage) {
+                alert("Please select a model and enter a message.");
+                return;
+            }
+
+            chatBox.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+            document.getElementById("userInput").value = "";
+
             try {
                 const response = await fetch("http://127.0.0.1:11434/api/generate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model, prompt: userMessage })
+                    body: JSON.stringify({ model: model, prompt: userMessage })
                 });
+
                 const data = await response.json();
-                document.getElementById("chatBox").innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+                chatBox.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
             } catch {
                 alert("Error communicating with Ollama.");
             }
         }
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("userName");
+            window.location.href = "index.html";
+        }
     </script>
 </head>
 <body onload="fetchModels()">
-    <button onclick="localStorage.clear(); window.location.href='index.html'">Logout</button>
-    <h1>Ollama Chatbot</h1>
-    <label>Select Model: <select id="model"><option>Loading...</option></select></label>
-    <div id="chatBox" style="height: 200px; overflow-y: auto; border: 1px solid #ddd;"></div>
-    <input id="userInput" type="text" placeholder="Type here...">
+    <button onclick="logout()">Logout</button>
+    <h1 id="welcomeMessage">Welcome!</h1>
+    <h2>Ollama Chatbot</h2>
+    <p>Select a model and start chatting:</p>
+    <select id="model"><option>Loading models...</option></select>
+    <button onclick="fetchModels()">Refresh Models</button>
+
+    <div id="chatBox"></div>
+    <input type="text" id="userInput" placeholder="Type your message...">
     <button onclick="sendMessage()">Send</button>
 </body>
 </html>
