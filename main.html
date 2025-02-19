@@ -7,84 +7,130 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #d4418e, #0652c5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
             text-align: center;
-            margin: 40px;
         }
-        #chatBox {
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        select, input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #d4418e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #b8327e;
+        }
+        .chat-box {
+            height: 200px;
+            overflow-y: auto;
             border: 1px solid #ddd;
             padding: 10px;
-            height: 200px;
-            width: 100%;
-            overflow-y: auto;
             background: #f9f9f9;
+            text-align: left;
         }
     </style>
+</head>
+<body onload="fetchModels()">
+    <div class="container">
+        <h1>Welcome to Ollama Chatbot</h1>
+        <button onclick="logout()">Logout</button>
+
+        <label>Select Model:</label>
+        <select id="model">
+            <option>Loading...</option>
+        </select>
+
+        <div id="chatBox" class="chat-box"></div>
+
+        <input id="userInput" type="text" placeholder="Type here...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
     <script>
+        // Redirect if not logged in
         if (localStorage.getItem("isLoggedIn") !== "true") {
             window.location.href = "index.html";
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const userName = localStorage.getItem("userName") || "User";
-            document.getElementById("welcomeMessage").textContent = `Welcome, ${userName}!`;
-        });
-
+        // Fetch Ollama models
         async function fetchModels() {
             try {
                 const response = await fetch("http://127.0.0.1:11434/api/tags");
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+
                 const data = await response.json();
                 const modelDropdown = document.getElementById("model");
-                modelDropdown.innerHTML = data.models.length ? data.models.map(m => `<option>${m.name}</option>`).join('') : "<option>No models found</option>";
-            } catch {
-                alert("Ollama is not running.");
+
+                if (data.models && data.models.length > 0) {
+                    modelDropdown.innerHTML = data.models.map(m => `<option>${m.name}</option>`).join('');
+                } else {
+                    modelDropdown.innerHTML = "<option>No models found</option>";
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                alert(`Error fetching models: ${error.message}`);
             }
         }
 
+        // Send message to Ollama
         async function sendMessage() {
             const model = document.getElementById("model").value;
-            const userMessage = document.getElementById("userInput").value.trim();
+            const userMessage = document.getElementById("userInput").value;
+            if (!userMessage) return;
+
             const chatBox = document.getElementById("chatBox");
-
-            if (!model || model === "No models found" || !userMessage) {
-                alert("Please select a model and enter a message.");
-                return;
-            }
-
             chatBox.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
-            document.getElementById("userInput").value = "";
 
             try {
                 const response = await fetch("http://127.0.0.1:11434/api/generate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ model: model, prompt: userMessage })
+                    body: JSON.stringify({ model, prompt: userMessage })
                 });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
 
                 const data = await response.json();
                 chatBox.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            } catch {
-                alert("Error communicating with Ollama.");
+                chatBox.scrollTop = chatBox.scrollHeight;  // Auto-scroll to latest message
+
+            } catch (error) {
+                console.error("Error communicating with Ollama:", error);
+                alert(`Error: ${error.message}`);
             }
         }
 
+        // Logout function
         function logout() {
-            localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("userName");
-            window.location.href = "index.html";
+            localStorage.clear();
+            window.location.href = 'index.html';
         }
     </script>
-</head>
-<body onload="fetchModels()">
-    <button onclick="logout()">Logout</button>
-    <h1 id="welcomeMessage">Welcome!</h1>
-    <h2>Ollama Chatbot</h2>
-    <p>Select a model and start chatting:</p>
-    <select id="model"><option>Loading models...</option></select>
-    <button onclick="fetchModels()">Refresh Models</button>
-
-    <div id="chatBox"></div>
-    <input type="text" id="userInput" placeholder="Type your message...">
-    <button onclick="sendMessage()">Send</button>
 </body>
 </html>
