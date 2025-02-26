@@ -1,50 +1,61 @@
+/* Reset default margins & paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Full-screen responsive background */
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
     background: linear-gradient(to bottom, #d4418e, #0652c5);
-    color: white;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
-    flex-direction: column;
-}
-
-.login-container, .chat-container {
-    background: white;
-    color: black;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 100vh;
     text-align: center;
-    width: 350px;
 }
 
+/* Centered login box */
+.login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Input fields & buttons */
 input, button {
     width: 94%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
 }
 
+/* Button styles */
 button {
     background: #d4418e;
     color: white;
     border: none;
     cursor: pointer;
 }
-
 button:hover {
     background: #b8327e;
 }
 
-#chatBox {
-    border: 1px solid #ddd;
-    padding: 10px;
-    height: 200px;
+/* Error message */
+.message {
+    color: red;
+    font-size: 14px;
+}
+
+/* GitHub login button */
+a img {
     width: 100%;
-    overflow-y: auto;
-    background: #f9f9f9;
+    max-width: 250px;
+    margin-top: 10px;
 }
