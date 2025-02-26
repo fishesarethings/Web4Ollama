@@ -4,43 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #d4418e, #0652c5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 400px;
-        }
-        input, button {
-            width: 94%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            background: #d4418e;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover { background: #b8327e; }
-        .message { color: red; font-size: 14px; }
-        a img { width: 100%; max-width: 250px; margin-top: 10px; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
 </head>
 <body>
     <div class="login-container">
@@ -52,62 +17,10 @@
         </form>
         <p class="message" id="message"></p>
         <button onclick="signup()">Sign Up</button>
-        <p>Or login with</p>
-        <a href="#" onclick="loginWithGitHub()">
+        <p>Or continue with</p>
+        <button class="github-button" onclick="loginWithGitHub()">
             <img src="images/github.png" alt="GitHub Login">
-        </a>
+        </button>
     </div>
-    
-    <script>
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-            return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        function sanitizeInput(input) {
-            return input.replace(/[<>"'/]/g, '');
-        }
-
-        document.getElementById("loginForm").addEventListener("submit", async function (event) {
-            event.preventDefault();
-            const email = sanitizeInput(document.getElementById("email").value);
-            const password = document.getElementById("password").value;
-            const hashedPassword = await hashPassword(password);
-
-            if (localStorage.getItem(email) === hashedPassword) {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("userName", email.split("@")[0]);
-                window.location.href = "main.html";
-            } else {
-                document.getElementById("message").textContent = "Invalid login.";
-            }
-        });
-
-        async function signup() {
-            const email = sanitizeInput(document.getElementById("email").value);
-            const password = document.getElementById("password").value;
-
-            if (!email || !password) {
-                alert("Please fill in both fields.");
-                return;
-            }
-
-            const hashedPassword = await hashPassword(password);
-            if (!localStorage.getItem(email)) {
-                localStorage.setItem(email, hashedPassword);
-                alert("Signup successful!");
-            } else {
-                alert("Email already exists.");
-            }
-        }
-
-        function loginWithGitHub() {
-            const clientId = "Ov23li1RjJKnUCc6dEsS";
-            const redirectUrl = encodeURIComponent("https://fishesarethings.github.io/Web4ollama/main.html");
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user`;
-        }
-    </script>
 </body>
 </html>
