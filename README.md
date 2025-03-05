@@ -11,18 +11,13 @@ This is a simple chatbot interface for **Ollama**, designed to run as a **static
 
 ## **Setup Instructions**  
 
-### **1️⃣ Deploy Frontend on GitHub Pages**  
-1. **Fork** this repository or create your own.  
-2. Enable **GitHub Pages**:  
-   - Go to **Settings → Pages**.  
-   - Select **Branch: main** (or master).  
-   - Click **Save**.  
-3. Your chatbot will be available at:  
-   **`https://your-username.github.io/ollama-chatbot/`**  
-
-### **2️⃣ Install & Run Ollama Locally**  
+### **1️⃣ Install & Run Ollama Locally**  
 #### **Install Ollama**  
 - **Windows:** Download from [Ollama's Website](https://ollama.ai).  
 - **Linux/macOS:** Run:  
   ```sh
   curl -fsSL https://ollama.ai/install.sh | sh
+
+### **2️⃣ Open website
+#### **Open website**
+- **Go to:** https://fishesarethings.github.io/Web4Ollama/
