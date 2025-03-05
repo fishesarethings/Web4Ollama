@@ -51,7 +51,7 @@
         }
     </style>
 </head>
-<body onload="fetchModels()">
+<body onload="initializeChat()">
     <div class="container">
         <h1>Welcome to Ollama Chatbot</h1>
         <a href="http://127.0.0.1:11434" target="_blank">Please test to see if Ollama is running</a>
@@ -75,6 +75,11 @@
             window.location.href = "index.html";
         }
 
+        function initializeChat() {
+            fetchModels();
+            loadChatHistory();
+        }
+
         // Fetch Ollama models
         async function fetchModels() {
             try {
@@ -96,6 +101,23 @@
                 console.error("Fetch error:", error);
                 alert(`Error fetching models: ${error.message}`);
             }
+        }
+
+        // Load previous chat history from localStorage
+        function loadChatHistory() {
+            const chatBox = document.getElementById("chatBox");
+            const savedChat = localStorage.getItem("chatHistory");
+
+            if (savedChat) {
+                chatBox.innerHTML = savedChat;
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to latest message
+            }
+        }
+
+        // Save chat history
+        function saveChatHistory() {
+            const chatBox = document.getElementById("chatBox").innerHTML;
+            localStorage.setItem("chatHistory", chatBox);
         }
 
         // Send message to Ollama
@@ -122,21 +144,20 @@
                 chatBox.innerHTML += `<div><strong>Bot:</strong> ${data.response}</div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;  // Auto-scroll to latest message
 
+                saveChatHistory(); // Save after response
+
             } catch (error) {
                 console.error("Error communicating with Ollama:", error);
                 alert(`Error: ${error.message}`);
             }
         }
 
-        // Logout function (Fix applied)
+        // Logout function (Does NOT clear chat history)
         function logout() {
-            localStorage.clear(); // Clears stored login data
-            setTimeout(() => {
-                window.location.href = "index.html"; // Redirects after clearing
-            }, 100);
+            window.location.href = "index.html"; // Redirect without clearing storage
         }
         
-        // Allow Enter key to send message (Fix applied)
+        // Allow Enter key to send message
         document.getElementById('userInput').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 sendMessage();
