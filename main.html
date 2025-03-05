@@ -54,7 +54,7 @@
 <body onload="fetchModels()">
     <div class="container">
         <h1>Welcome to Ollama Chatbot</h1>
-        <a href="http://127.0.0.1:11434" target="_blank">Please test to see if Ollama is running</a>
+        <a href="http://127.0.0.1:11434" target="_blank">Please test to see if ollama is running</a>
         <button onclick="logout()">Logout</button>
         
         <label>Select Model:</label>
@@ -127,21 +127,18 @@
             }
         }
 
-        // Logout function (Fix: Force page reload)
+        // Logout function
         function logout() {
             localStorage.clear();
             window.location.href = 'index.html';
-            setTimeout(() => location.reload(), 100);  // Ensures proper logout
         }
         
-        // Fix: Correct "Enter" key event listener syntax
+        // make it so that you can use enter to submit a message
         document.getElementById('userInput').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
+			if (event.key === 'Enter') {
+				sendMessage();
+		});
     </script>
-
-    <p>V1.0.1</p>
+	<p>V1.0.0</p>
 </body>
 </html>
