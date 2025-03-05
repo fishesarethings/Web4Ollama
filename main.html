@@ -79,7 +79,7 @@
         async function fetchModels(retries = 3) {
             while (retries > 0) {
                 try {
-                    const response = await fetch("/proxy/api/tags");
+                    const response = await fetch("http://127.0.0.1:11434/api/tags");
 
                     if (!response.ok) throw new Error(`HTTP Error! Status: ${response.status}`);
 
@@ -115,7 +115,7 @@
             chatBox.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
 
             try {
-                const response = await fetch("/proxy/api/generate", {
+                const response = await fetch("http://127.0.0.1:11434/api/generate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ model, prompt: userMessage })
