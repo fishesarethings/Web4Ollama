@@ -18,6 +18,6 @@ This is a simple chatbot interface for **Ollama**, designed to run as a **static
   ```sh
   curl -fsSL https://ollama.ai/install.sh | sh
 
-### **2️⃣ Open website
+### **2️⃣ Open website**
 #### **Open website**
 - **Go to:** https://fishesarethings.github.io/Web4Ollama/
