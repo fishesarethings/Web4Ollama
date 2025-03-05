@@ -56,6 +56,7 @@
         <h1>Welcome to Ollama Chatbot</h1>
         <a href="http://127.0.0.1:11434" target="_blank">Please test to see if Ollama is running</a>
         <button onclick="logout()">Logout</button>
+        <button onclick="clearChat()">New Conversation</button>
         
         <label>Select Model:</label>
         <select id="model">
@@ -66,7 +67,7 @@
 
         <input id="userInput" type="text" placeholder="Type here...">
         <button onclick="sendMessage()">Send</button>
-        <p>V1.0.1</p>
+        <p>V1.0.2</p>
     </div>
 
     <script>
@@ -152,9 +153,15 @@
             }
         }
 
-        // Logout function (Does NOT clear chat history)
+        // Logout function (Keeps user logged in)
         function logout() {
             window.location.href = "index.html"; // Redirect without clearing storage
+        }
+
+        // Clear chat history (for new conversation)
+        function clearChat() {
+            localStorage.removeItem("chatHistory"); // Delete stored conversation
+            document.getElementById("chatBox").innerHTML = ""; // Clear chat visually
         }
         
         // Allow Enter key to send message
